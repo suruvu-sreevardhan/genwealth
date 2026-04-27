@@ -1,0 +1,6 @@
+{
+  "model_name": "transaction_category_model",
+  "exported_at": "2026-04-26T12:24:54.476027Z",
+  "framework": "scikit-learn",
+  "notes": "Trained on synthetic dataset in Colab"
+}

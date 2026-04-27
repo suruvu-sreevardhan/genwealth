@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(flutter devices:*)",
+      "Bash(flutter clean:*)",
+      "Bash(flutter pub get:*)",
+      "Bash(start ms-settings:developers)",
+      "Bash(flutter run:*)",
+      "Bash(timeout /t 30)",
+      "Bash(flutter install:*)",
+      "Bash(adb:*)",
+      "Bash(flutter build:*)",
+      "Bash(dir:*)",
+      "Bash(ipconfig:*)",
+      "Bash(findstr:*)",
+      "Bash(python app.py:*)",
+      "Bash(python3:*)",
+      "Bash(where:*)",
+      "Bash(py:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
