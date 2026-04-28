@@ -98,7 +98,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               DropdownButtonFormField<String>(
-                initialValue: selectedCategory,
+                value: selectedCategory,
                 decoration: const InputDecoration(labelText: 'Category'),
                 items: displayCategoriesForBudget
                     .map((c) => DropdownMenuItem(value: c, child: Text(c)))

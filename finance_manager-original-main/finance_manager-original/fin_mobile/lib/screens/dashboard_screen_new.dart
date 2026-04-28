@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
@@ -132,7 +133,10 @@ class _DashboardScreenNewState extends State<DashboardScreenNew>
 
   int _asInt(dynamic value) => _asDouble(value).round();
 
-  String _currency(double value) => '₹${value.toStringAsFixed(0)}';
+  String _currency(double value) {
+    final format = NumberFormat.currency(locale: 'en_IN', symbol: '₹', decimalDigits: 0);
+    return format.format(value);
+  }
 
   String _displayName() {
     final auth = context.read<AuthProvider>();
@@ -275,21 +279,25 @@ class _DashboardScreenNewState extends State<DashboardScreenNew>
                 ),
               ),
               const SizedBox(height: 10),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _badge(
-                    icon: Icons.local_fire_department_rounded,
-                    label: 'Saving streak • $streakDays days',
-                    color: AppTheme.purple,
-                  ),
-                  _badge(
-                    icon: Icons.workspace_premium_rounded,
-                    label: 'XP $xp • L$level $levelName',
-                    color: AppTheme.primary,
-                  ),
-                ],
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _badge(
+                      icon: Icons.local_fire_department_rounded,
+                      label: 'Saving streak • $streakDays days',
+                      color: AppTheme.purple,
+                    ),
+                    _badge(
+                      icon: Icons.workspace_premium_rounded,
+                      label: 'XP $xp • L$level $levelName',
+                      color: AppTheme.primary,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

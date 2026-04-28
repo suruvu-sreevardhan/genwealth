@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 
 import '../services/api_service.dart';
 import '../theme.dart';
+import 'package:provider/provider.dart';
+import '../providers/theme_provider.dart';
+import 'budget_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -14,8 +17,7 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen>
-    with SingleTickerProviderStateMixin {
+class _ProfileScreenState extends State<ProfileScreen> {
   final ApiService _api = ApiService();
   final TextEditingController _incomeController = TextEditingController();
   final TextEditingController _emergencyFundController = TextEditingController();
@@ -338,7 +340,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     const SizedBox(height: 6),
                     Text(_email ?? 'No email', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.64), fontWeight: FontWeight.w600)),
                     const SizedBox(height: 10),
-                    _badge('XP Level 4 Saver 🏆', AppTheme.primary, icon: Icons.workspace_premium_rounded),
+                    _badge('GenWealth Member 🏆', AppTheme.primary, icon: Icons.workspace_premium_rounded),
                   ],
                 ),
               ),
@@ -349,8 +351,17 @@ class _ProfileScreenState extends State<ProfileScreen>
             spacing: 8,
             runSpacing: 8,
             children: [
-              _badge('7 day streak', AppTheme.purple, icon: Icons.local_fire_department_rounded),
-              _badge('Saved ₹12,400 this month', AppTheme.mint, icon: Icons.savings_rounded),
+              _badge(
+                '$_goalsCount active ${_goalsCount == 1 ? 'goal' : 'goals'}',
+                AppTheme.purple,
+                icon: Icons.flag_circle_rounded,
+              ),
+              if (_notificationsCount > 0)
+                _badge(
+                  '$_notificationsCount new alerts',
+                  AppTheme.mint,
+                  icon: Icons.notifications_active_rounded,
+                ),
             ],
           ),
         ],
@@ -413,7 +424,13 @@ class _ProfileScreenState extends State<ProfileScreen>
             icon: Icons.lock_rounded,
             color: Colors.indigo,
             onTap: () {
-              setState(() => _successMessage = 'Security center coming soon.');
+              showModalBottomSheet(
+                context: context,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                ),
+                builder: (context) => const _SecuritySettingsSheet(),
+              );
             },
           ),
           _settingsTile(
@@ -423,16 +440,24 @@ class _ProfileScreenState extends State<ProfileScreen>
             color: AppTheme.primary,
             onTap: _exportData,
           ),
-          _settingsTile(
-            title: 'Dark mode',
-            subtitle: _darkModeEnabled ? 'Enabled (preview state)' : 'Disabled (preview state)',
-            icon: Icons.dark_mode_rounded,
-            color: AppTheme.purple,
-            trailing: Switch(
-              value: _darkModeEnabled,
-              onChanged: (v) => setState(() => _darkModeEnabled = v),
-            ),
-            onTap: () => setState(() => _darkModeEnabled = !_darkModeEnabled),
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              return _settingsTile(
+                title: 'Dark mode',
+                subtitle: themeProvider.isDarkMode ? 'Enabled' : 'Disabled',
+                icon: Icons.dark_mode_rounded,
+                color: AppTheme.purple,
+                trailing: Switch(
+                  value: themeProvider.isDarkMode,
+                  onChanged: (v) {
+                    themeProvider.toggleTheme(v);
+                  },
+                ),
+                onTap: () {
+                  themeProvider.toggleTheme(!themeProvider.isDarkMode);
+                },
+              );
+            },
           ),
           _settingsTile(
             title: 'Notifications',
@@ -451,7 +476,10 @@ class _ProfileScreenState extends State<ProfileScreen>
             icon: Icons.flag_circle_rounded,
             color: AppTheme.mint,
             onTap: () {
-              setState(() => _successMessage = 'Goals manager opening soon.');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => BudgetScreen()),
+              ).then((_) => _loadProfile());
             },
           ),
           _settingsTile(
@@ -460,7 +488,13 @@ class _ProfileScreenState extends State<ProfileScreen>
             icon: Icons.workspace_premium_rounded,
             color: Colors.teal,
             onTap: () {
-              setState(() => _successMessage = 'Subscription center opening soon.');
+              showModalBottomSheet(
+                context: context,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                ),
+                builder: (context) => const _SubscriptionSettingsSheet(),
+              );
             },
           ),
         ],
@@ -573,6 +607,166 @@ class _GlowBlob extends StatelessWidget {
             stops: const [0, 1],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _SecuritySettingsSheet extends StatefulWidget {
+  const _SecuritySettingsSheet();
+  @override
+  State<_SecuritySettingsSheet> createState() => _SecuritySettingsSheetState();
+}
+
+class _SecuritySettingsSheetState extends State<_SecuritySettingsSheet> {
+  bool _biometric = false;
+  bool _pin = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: const BoxDecoration(
+        color: AppTheme.cardWhite,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Security Settings', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 16),
+          SwitchListTile(
+            title: const Text('Biometric Login'),
+            subtitle: const Text('Use Face ID or Fingerprint'),
+            value: _biometric,
+            onChanged: (v) => setState(() => _biometric = v),
+          ),
+          SwitchListTile(
+            title: const Text('Require PIN'),
+            subtitle: const Text('Ask for PIN on app resume'),
+            value: _pin,
+            onChanged: (v) => setState(() => _pin = v),
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primary,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Save Settings', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class _SubscriptionSettingsSheet extends StatefulWidget {
+  const _SubscriptionSettingsSheet();
+  @override
+  State<_SubscriptionSettingsSheet> createState() => _SubscriptionSettingsSheetState();
+}
+
+class _SubscriptionSettingsSheetState extends State<_SubscriptionSettingsSheet> {
+  bool _isPro = false;
+  
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: const BoxDecoration(
+        color: AppTheme.cardWhite,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.workspace_premium_rounded, color: AppTheme.primary, size: 28),
+              const SizedBox(width: 8),
+              const Text('GenWealth Pro', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: _isPro ? AppTheme.mint.withOpacity(0.1) : AppTheme.purple.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: _isPro ? AppTheme.mint : AppTheme.purple.withOpacity(0.3)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _isPro ? 'Active Subscription' : 'Free Plan',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _isPro ? 'You have access to all Pro features.' : 'Upgrade to unlock AI coaching and advanced analytics.',
+                        style: const TextStyle(fontSize: 13),
+                      ),
+                    ],
+                  ),
+                ),
+                if (_isPro) const Icon(Icons.check_circle_rounded, color: AppTheme.mint, size: 32),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text('Included Features:', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          _featureRow('Unlimited AI Finance Coach', _isPro),
+          _featureRow('Advanced Fraud Anomaly Alerts', _isPro),
+          _featureRow('Export Full Transaction History', _isPro),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _isPro ? Colors.redAccent : AppTheme.primary,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              onPressed: () {
+                setState(() => _isPro = !_isPro);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(_isPro ? 'Upgraded to Pro!' : 'Subscription cancelled.')),
+                );
+              },
+              child: Text(
+                _isPro ? 'Cancel Subscription' : 'Upgrade for ₹499/mo',
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _featureRow(String text, bool unlocked) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        children: [
+          Icon(unlocked ? Icons.check_rounded : Icons.lock_outline_rounded, 
+               color: unlocked ? AppTheme.mint : Colors.grey, size: 18),
+          const SizedBox(width: 8),
+          Text(text, style: TextStyle(color: unlocked ? AppTheme.dark : Colors.grey)),
+        ],
       ),
     );
   }

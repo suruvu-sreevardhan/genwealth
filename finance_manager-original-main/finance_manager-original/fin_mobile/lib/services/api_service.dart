@@ -69,14 +69,15 @@ class ApiService {
 
   Future<http.Response> post(String path, Map body, {bool auth = false}) async {
     final url = Uri.parse('$baseUrl$path');
-    if (!auth)
+    if (!auth) {
       return await http
           .post(url, body: jsonEncode(body), headers: _headers(false))
           .timeout(
-            Duration(seconds: 10),
+            const Duration(seconds: 10),
             onTimeout: () =>
                 http.Response('{"error": "Connection timeout"}', 408),
           );
+    }
 
     final token = await getToken();
     final headers = {
@@ -87,7 +88,7 @@ class ApiService {
     return await http
         .post(url, body: jsonEncode(body), headers: headers)
         .timeout(
-          Duration(seconds: 10),
+          const Duration(seconds: 10),
           onTimeout: () =>
               http.Response('{"error": "Connection timeout"}', 408),
         );
@@ -97,12 +98,13 @@ class ApiService {
       {Map<String, String>? queryParams, bool auth = false}) async {
     var url = Uri.parse('$baseUrl$path');
     if (queryParams != null) url = url.replace(queryParameters: queryParams);
-    if (!auth)
+    if (!auth) {
       return await http.get(url, headers: _headers(false)).timeout(
-            Duration(seconds: 10),
+            const Duration(seconds: 10),
             onTimeout: () =>
                 http.Response('{"error": "Connection timeout"}', 408),
           );
+    }
     final token = await getToken();
     final headers = {
       'Content-Type': 'application/json',
@@ -110,7 +112,7 @@ class ApiService {
       'X-Request-ID': _requestId(),
     };
     return await http.get(url, headers: headers).timeout(
-          Duration(seconds: 10),
+          const Duration(seconds: 10),
           onTimeout: () =>
               http.Response('{"error": "Connection timeout"}', 408),
         );
@@ -118,14 +120,15 @@ class ApiService {
 
   Future<http.Response> put(String path, Map body, {bool auth = false}) async {
     final url = Uri.parse('$baseUrl$path');
-    if (!auth)
+    if (!auth) {
       return await http
           .put(url, body: jsonEncode(body), headers: _headers(false))
           .timeout(
-            Duration(seconds: 10),
+            const Duration(seconds: 10),
             onTimeout: () =>
                 http.Response('{"error": "Connection timeout"}', 408),
           );
+    }
 
     final token = await getToken();
     final headers = {
@@ -136,7 +139,7 @@ class ApiService {
     return await http
         .put(url, body: jsonEncode(body), headers: headers)
         .timeout(
-          Duration(seconds: 10),
+          const Duration(seconds: 10),
           onTimeout: () =>
               http.Response('{"error": "Connection timeout"}', 408),
         );
@@ -144,12 +147,13 @@ class ApiService {
 
   Future<http.Response> delete(String path, {bool auth = false}) async {
     final url = Uri.parse('$baseUrl$path');
-    if (!auth)
+    if (!auth) {
       return await http.delete(url, headers: _headers(false)).timeout(
-            Duration(seconds: 10),
+            const Duration(seconds: 10),
             onTimeout: () =>
                 http.Response('{"error": "Connection timeout"}', 408),
           );
+    }
 
     final token = await getToken();
     final headers = {
@@ -158,7 +162,7 @@ class ApiService {
       'X-Request-ID': _requestId(),
     };
     return await http.delete(url, headers: headers).timeout(
-          Duration(seconds: 10),
+          const Duration(seconds: 10),
           onTimeout: () =>
               http.Response('{"error": "Connection timeout"}', 408),
         );

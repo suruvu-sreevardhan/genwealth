@@ -80,6 +80,9 @@ def dashboard_summary(current_user):
     ).order_by(Transaction.transaction_date.desc()).all()
 
     total_income = sum(float(t.amount) for t in txns if getattr(t, 'type', 'expense') == 'income')
+    if total_income == 0 and current_user.monthly_income is not None:
+        total_income = float(current_user.monthly_income)
+    
     total_expense = sum(float(t.amount) for t in txns if getattr(t, 'type', 'expense') == 'expense')
     balance = total_income - total_expense
 

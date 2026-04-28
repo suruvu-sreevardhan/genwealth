@@ -76,7 +76,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
         builder: (_, setDialogState) => AlertDialog(
           title: const Text('Select Correct Category'),
           content: DropdownButtonFormField<String>(
-            initialValue: selected,
+            value: selected,
             decoration: const InputDecoration(labelText: 'Category'),
             items: displayCategoriesForBudget
                 .map((c) => DropdownMenuItem(value: c, child: Text(c)))

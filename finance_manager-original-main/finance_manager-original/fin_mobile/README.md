@@ -1,4 +1,4 @@
-# Finlit Mobile App
+# GenWealth Mobile App
 
 A Flutter mobile application for financial literacy and transaction management.
 

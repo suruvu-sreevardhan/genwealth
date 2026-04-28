@@ -175,96 +175,191 @@ class AppTheme {
   }
 
   static ThemeData get darkTheme {
+    const backgroundDark = Color(0xFF0B0F14);
+    const primarySurfaceCards = Color(0xFF121821);
+    const secondarySurface = Color(0xFF1A2230);
+    const elevatedCards = Color(0xFF202938);
+    const borders = Color(0xFF2A3444);
+    
+    const textPrimary = Colors.white;
+    const textSecondary = Color(0xFFB6C2D1);
+    const textMuted = Color(0xFF7E8A9A);
+    
+    const accentBlue = Color(0xFF4D8DFF);
+    const accentGreen = Color(0xFF2ECC71);
+    const accentRed = Color(0xFFFF5C5C);
+    const accentPurple = Color(0xFF8B5CFF);
+
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: primary,
+      seedColor: accentBlue,
       brightness: Brightness.dark,
-      primary: primary,
-      secondary: mint,
-      tertiary: purple,
-      surface: const Color(0xFF111A2B),
-      onSurface: const Color(0xFFE5E7EB),
-      error: const Color(0xFFF87171),
+      primary: accentBlue,
+      secondary: accentPurple,
+      tertiary: accentGreen,
+      surface: backgroundDark,
+      onSurface: textPrimary,
+      error: accentRed,
     );
 
     final base = ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: dark,
+      scaffoldBackgroundColor: backgroundDark,
       fontFamily: 'Inter',
       visualDensity: VisualDensity.adaptivePlatformDensity,
     );
 
     return base.copyWith(
-      textTheme: _textTheme(Brightness.dark),
+      textTheme: _textTheme(Brightness.dark).copyWith(
+        displayLarge: const TextStyle(fontSize: 44, fontWeight: FontWeight.w800, letterSpacing: -0.9, color: textPrimary),
+        displayMedium: const TextStyle(fontSize: 34, fontWeight: FontWeight.w700, letterSpacing: -0.6, color: textPrimary),
+        headlineLarge: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700, letterSpacing: -0.4, color: textPrimary),
+        headlineMedium: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700, letterSpacing: -0.3, color: textPrimary),
+        titleLarge: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, letterSpacing: -0.15, color: textPrimary),
+        titleMedium: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: textPrimary),
+        titleSmall: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: textPrimary),
+        bodyLarge: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: textPrimary),
+        bodyMedium: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: textSecondary),
+        bodySmall: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: textMuted),
+        labelLarge: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: textPrimary),
+        labelMedium: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: textSecondary),
+      ),
       appBarTheme: const AppBarTheme(
         centerTitle: false,
         elevation: 0,
         scrolledUnderElevation: 0,
         backgroundColor: Colors.transparent,
+        foregroundColor: textPrimary,
+        titleTextStyle: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: textPrimary, letterSpacing: 0.1),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
+          elevation: 0,
           minimumSize: const Size.fromHeight(52),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(_radius)),
-          textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+          textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16, letterSpacing: 0.2),
         ).copyWith(
           backgroundColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.disabled)) {
-              return primary.withOpacity(0.5);
-            }
-            return primary;
+            if (states.contains(WidgetState.disabled)) return accentBlue.withOpacity(0.3);
+            return accentBlue;
           }),
           foregroundColor: WidgetStateProperty.all(Colors.white),
         ),
       ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          minimumSize: const Size.fromHeight(50),
+          side: const BorderSide(color: borders),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(_radius)),
+          textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+          foregroundColor: textPrimary,
+        ),
+      ),
       cardTheme: CardThemeData(
         elevation: 0,
-        color: const Color(0xFF162238),
+        color: primarySurfaceCards,
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        shadowColor: Colors.black.withOpacity(0.4),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: borders, width: 1),
+        ),
+        shadowColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
       ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
         elevation: 0,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white70,
-        backgroundColor: const Color(0xFF17243D).withOpacity(0.88),
+        selectedItemColor: accentBlue,
+        unselectedItemColor: textMuted,
+        backgroundColor: Color(0xFF10161F),
+        selectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, overflow: TextOverflow.ellipsis),
+        unselectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, overflow: TextOverflow.ellipsis),
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: const Color(0xFF17243D).withOpacity(0.88),
-        indicatorColor: primary.withOpacity(0.28),
+        backgroundColor: const Color(0xFF10161F),
+        indicatorColor: accentBlue.withOpacity(0.18),
         elevation: 0,
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
           return TextStyle(
             fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-            color: selected ? Colors.white : Colors.white70,
+            color: selected ? accentBlue : textMuted,
+            fontSize: 12,
+            overflow: TextOverflow.ellipsis,
+          );
+        }),
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          final selected = states.contains(WidgetState.selected);
+          return IconThemeData(
+            color: selected ? accentBlue : textMuted,
+            size: 24,
           );
         }),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: const Color(0xFF17243D),
+        fillColor: primarySurfaceCards,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(_radius),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.14)),
+          borderSide: const BorderSide(color: borders),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(_radius),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.14)),
+          borderSide: const BorderSide(color: borders),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(_radius),
-          borderSide: const BorderSide(color: mint, width: 1.4),
+          borderSide: const BorderSide(color: accentBlue, width: 1.5),
         ),
-        hintStyle: TextStyle(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.w500),
-        labelStyle: TextStyle(color: Colors.white.withOpacity(0.75), fontWeight: FontWeight.w500),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(_radius),
+          borderSide: const BorderSide(color: accentRed, width: 1.2),
+        ),
+        hintStyle: const TextStyle(color: textMuted, fontWeight: FontWeight.w500),
+        labelStyle: const TextStyle(color: textMuted, fontWeight: FontWeight.w500),
+      ),
+      dividerTheme: const DividerThemeData(
+        thickness: 1,
+        color: borders,
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: primarySurfaceCards,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+          side: const BorderSide(color: borders, width: 1),
+        ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: elevatedCards,
+        contentTextStyle: const TextStyle(color: textPrimary, fontWeight: FontWeight.w500),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: const BorderSide(color: borders),
+        ),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return Colors.white;
+          return textMuted;
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return accentBlue;
+          return borders;
+        }),
       ),
       extensions: [
-        AppGlassTheme.dark,
+        AppGlassTheme(
+          color: primarySurfaceCards.withOpacity(0.85),
+          blurSigma: 24,
+          border: const Border.fromBorderSide(
+            BorderSide(color: borders, width: 1.0),
+          ),
+          shadow: const [],
+        ),
       ],
     );
   }
@@ -323,16 +418,16 @@ class AppGlassTheme extends ThemeExtension<AppGlassTheme> {
   static AppGlassTheme get dark {
     final useBlur = kIsWeb;
     return AppGlassTheme(
-      color: const Color(0x331E293B),
-      blurSigma: useBlur ? 22 : 0,
+      color: const Color(0x8C12141D), // 55% opacity deep slate
+      blurSigma: useBlur ? 32 : 0,
       border: const Border.fromBorderSide(
-        BorderSide(color: Color(0x40FFFFFF), width: 1.0),
+        BorderSide(color: Color(0x1AFFFFFF), width: 1.0),
       ),
       shadow: const [
         BoxShadow(
-          color: Color(0x33000000),
-          blurRadius: 24,
-          offset: Offset(0, 10),
+          color: Color(0x66000000),
+          blurRadius: 32,
+          offset: Offset(0, 8),
         ),
       ],
     );

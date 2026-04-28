@@ -113,7 +113,7 @@ class _OpeningScreenState extends State<OpeningScreen>
                 ),
                 const SizedBox(height: 12),
                 const Text(
-                  'Track spending, grow savings, AI insights.',
+                  'Track spending, grow savings, smart insights.',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
@@ -273,7 +273,7 @@ class _OpeningScreenState extends State<OpeningScreen>
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Track spending, grow savings, AI insights.',
+                    'Track spending, grow savings, smart insights.',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,

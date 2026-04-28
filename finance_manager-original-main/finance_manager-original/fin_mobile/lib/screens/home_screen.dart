@@ -1023,7 +1023,7 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (_, setDialogState) => AlertDialog(
           title: const Text('Map Transaction Category'),
           content: DropdownButtonFormField<String>(
-            initialValue: selectedCategory,
+            value: selectedCategory,
             decoration: const InputDecoration(labelText: 'Category'),
             items: displayCategoriesForBudget
                 .map((c) => DropdownMenuItem(value: c, child: Text(c)))
@@ -1165,7 +1165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
-                    initialValue: selectedCategory,
+                    value: selectedCategory,
                     decoration:
                         const InputDecoration(labelText: 'Category'),
                     items: validCategories
@@ -1243,7 +1243,7 @@ class _HomeScreenState extends State<HomeScreen> {
       NavigationDestination(
         icon: Icon(Icons.receipt_long_outlined),
         selectedIcon: Icon(Icons.receipt_long_rounded),
-        label: 'Transactions',
+        label: 'Txn History',
       ),
       NavigationDestination(
         icon: Icon(Icons.query_stats_outlined),
@@ -1346,7 +1346,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => SmsSettingsScreen()),
+                MaterialPageRoute(builder: (_) => const SmsSettingsScreen()),
               );
             },
             icon: const Icon(Icons.message_rounded),

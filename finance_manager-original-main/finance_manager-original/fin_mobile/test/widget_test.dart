@@ -12,7 +12,7 @@ import 'package:fin_mobile/main.dart';
 
 void main() {
   testWidgets('App boots without crashing', (WidgetTester tester) async {
-    await tester.pumpWidget(const FinApp());
+    await tester.pumpWidget(const GenWealthApp());
     await tester.pump(const Duration(seconds: 3));
 
     expect(find.byType(MaterialApp), findsOneWidget);

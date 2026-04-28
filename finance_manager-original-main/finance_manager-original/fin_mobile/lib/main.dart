@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/auth_provider.dart';
+import 'providers/theme_provider.dart';
 import 'screens/home_screen.dart';
 import 'screens/opening_screen.dart';
 import 'theme.dart';
@@ -76,26 +77,33 @@ Future<void> main() async {
     }
 
     debugPrint('[Startup] runApp()');
-    runApp(const FinApp());
+    runApp(const GenWealthApp());
   }, (error, stack) {
     debugPrint('[Startup] Uncaught zone error: $error');
     debugPrintStack(stackTrace: stack);
   });
 }
 
-class FinApp extends StatelessWidget {
-  const FinApp({super.key});
+class GenWealthApp extends StatelessWidget {
+  const GenWealthApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => AuthProvider()..restoreSession(),
-      child: MaterialApp(
-        title: 'Smart Budget - AI Financial Tracker',
-        theme: AppTheme.light,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: kIsWeb ? ThemeMode.system : ThemeMode.light,
-        home: const RootScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()..restoreSession()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+      ],
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return MaterialApp(
+            title: 'GenWealth',
+            theme: AppTheme.light,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeProvider.themeMode,
+            home: const RootScreen(),
+          );
+        },
       ),
     );
   }
