@@ -1,7 +1,8 @@
 
 import os, re, joblib
 
-MODEL_PATH = "category_model.joblib"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "category_model.joblib")
 
 normalization_dict = {
     "swigy":"swiggy",

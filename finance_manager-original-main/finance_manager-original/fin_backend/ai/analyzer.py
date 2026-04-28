@@ -241,6 +241,24 @@ def categorize(merchant: str, notes: str = "", amount: float = 0, txn_type: str 
     if txn_type == "income":
         return "income"
 
+    # 1. Try ML model inference first
+    try:
+        from .models.ml_inference import predict_category
+        ml_result = predict_category(
+            merchant=merchant or "",
+            notes=notes or "",
+            txn_type=txn_type or "",
+            amount=amount
+        )
+        if ml_result and ml_result.get("predicted_category"):
+            pred = ml_result["predicted_category"]
+            if pred and pred != "uncategorized":
+                print(f"✅ ML Model successfully classified '{merchant}' as '{pred}' (confidence: {ml_result.get('confidence', 'N/A')})")
+                return normalize_category(pred)
+    except Exception as e:
+        print(f"ML categorization failed or model not found: {e}")
+
+    # 2. Fallback to smart keyword rules
     for cat, keywords in SMART_CATEGORY_RULES.items():
         if any(keyword in s for keyword in keywords):
             return cat
